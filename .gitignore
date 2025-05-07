@@ -1,0 +1,55 @@
+# Node modules
+node_modules/
+
+# Build output
+dist/
+
+# Environment variables
+.env
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Prisma
+prisma/.env
+
+# VSCode
+.vscode/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Ignore local database files
+*.sqlite
+*.db
+
+
+# Ignore package manager files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+
+# Ignore temporary files
+*.tmp
+*.temp
+
+# Ignore logs
+debug.log
+error.log
+
+# Ignore backups
+*.bak
+
+# Ignore compiled JavaScript
+*.js
+*.js.map
+
+# Ignore compiled TypeScript
+*.ts.map

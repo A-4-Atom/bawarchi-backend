@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(cuid())
+  email     String    @unique
+  name      String?
+  messCards MessCard[]
+  feedbacks Feedback[]
+}
+
+model MessCard {
+  id           String   @id @default(cuid())
+  user         User     @relation(fields: [userId], references: [id])
+  userId       String
+  purchaseDate DateTime @default(now())
+  isActive     Boolean  @default(true)
+}
+
+model MenuItem {
+  id        String    @id @default(cuid())
+  name      String
+  type      MealType
+  day       String
+  feedbacks Feedback[]
+}
+
+model Feedback {
+  id      String   @id @default(cuid())
+  rating  Int
+  comment String?
+  user    User     @relation(fields: [userId], references: [id])
+  userId  String
+  item    MenuItem @relation(fields: [itemId], references: [id])
+  itemId  String
+}
+
+enum MealType {
+  BREAKFAST
+  LUNCH
+  DINNER
+}
