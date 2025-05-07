@@ -1,3 +1,5 @@
+// prisma/schema.prisma
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -7,14 +9,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// 🧑 User Model
 model User {
-  id        String    @id @default(cuid())
-  email     String    @unique
+  id        String     @id @default(cuid())
+  clerkId   String?     @unique // Add this field for Clerk's user ID
+  email     String     @unique
   name      String?
+  firstName String?    // Add these fields to match Clerk's data
+  lastName  String?
+  profileImageUrl String?
   messCards MessCard[]
   feedbacks Feedback[]
+  createdAt DateTime   @default(now()) // Recommended for tracking
+  updatedAt DateTime?   @updatedAt // Recommended for tracking
 }
 
+// 💳 Mess Card
 model MessCard {
   id           String   @id @default(cuid())
   user         User     @relation(fields: [userId], references: [id])
@@ -23,26 +33,49 @@ model MessCard {
   isActive     Boolean  @default(true)
 }
 
+// 🍛 Menu Item (Master list)
 model MenuItem {
-  id        String    @id @default(cuid())
-  name      String
-  type      MealType
-  day       String
-  feedbacks Feedback[]
+  id         String          @id @default(cuid())
+  name       String
+  price      Float?
+  feedbacks  Feedback[]
+  schedules  MenuSchedule[]
 }
 
+// 📅 Menu Schedule (Day + MealTime mapping)
+model MenuSchedule {
+  id       String     @id @default(cuid())
+  day      WeekDay
+  type     MealType
+  item     MenuItem   @relation(fields: [itemId], references: [id])
+  itemId   String
+}
+
+// ⭐ Feedback
 model Feedback {
-  id      String   @id @default(cuid())
-  rating  Int
+  id      String    @id @default(cuid())
+  rating  Int       // 1-5 stars
   comment String?
-  user    User     @relation(fields: [userId], references: [id])
+  user    User      @relation(fields: [userId], references: [id])
   userId  String
-  item    MenuItem @relation(fields: [itemId], references: [id])
+  item    MenuItem  @relation(fields: [itemId], references: [id])
   itemId  String
 }
 
+// 🍽️ Enum for Meal Time
 enum MealType {
   BREAKFAST
   LUNCH
   DINNER
+}
+
+// 📆 Enum for Days of the Week
+enum WeekDay {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
 }
