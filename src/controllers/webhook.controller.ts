@@ -11,6 +11,8 @@ export const handleWebhookEvent = async (req: Request, res: Response) => {
       const { id, first_name, last_name, email_addresses, image_url } =
         evt.data;
 
+      const collegeName = evt.data.unsafe_metadata?.collegeName as string | null;
+      const isAdmin = evt.data.unsafe_metadata?.isAdmin as boolean | undefined;
       // Create user in database
       await prisma.user.create({
         data: {
@@ -20,13 +22,16 @@ export const handleWebhookEvent = async (req: Request, res: Response) => {
           lastName: last_name,
           profileImageUrl: image_url,
           name: `${first_name} ${last_name}`.trim(),
+          collegeName: collegeName,
+          isAdmin: isAdmin
         },
       });
       console.log("User created in database:", first_name);
     } else if (eventType === "user.updated") {
       const { id, first_name, last_name, email_addresses, image_url } =
         evt.data;
-
+        const collegeName = evt.data.unsafe_metadata?.collegeName as string | null;
+        const isAdmin = evt.data.unsafe_metadata?.isAdmin as boolean | undefined;
       // Update user in database
       await prisma.user.update({
         where: { clerkId: id },
@@ -36,6 +41,8 @@ export const handleWebhookEvent = async (req: Request, res: Response) => {
           lastName: last_name,
           profileImageUrl: image_url,
           name: `${first_name} ${last_name}`.trim(),
+          collegeName: collegeName,
+          isAdmin: isAdmin
         },
       });
       console.log("User updated in database:", first_name);

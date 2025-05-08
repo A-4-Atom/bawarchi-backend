@@ -18,6 +18,8 @@ model User {
   firstName String?    // Add these fields to match Clerk's data
   lastName  String?
   profileImageUrl String?
+  collegeName String?
+  isAdmin Boolean @default(false)
   messCards MessCard[]
   feedbacks Feedback[]
   createdAt DateTime   @default(now()) // Recommended for tracking
