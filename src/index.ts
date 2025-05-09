@@ -1,8 +1,8 @@
 import express from "express";
 import * as dotenv from "dotenv";
 import menuRoutes from "./routes/menu.routes";
+import feedbackRoutes from "./routes/feedback.routes";
 import webhookRoutes from "./routes/webhook.routes";
-import { prisma } from "./prisma/client";
 import cors from "cors";
 
 dotenv.config();
@@ -15,8 +15,8 @@ app.use("/api/webhooks", webhookRoutes);
 
 app.use(express.json());
 
-// app.use("/api/menu", menuRoutes);
-// app.use("/api/feedback", feedbackRoutes);
+app.use("/api/menu", menuRoutes);
+app.use("/api/feedback", feedbackRoutes);
 app.get("/", (req, res) => res.send("Hello World!"));
 
 const PORT = process.env.PORT || 3000;
