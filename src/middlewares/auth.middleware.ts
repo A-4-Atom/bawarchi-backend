@@ -1,4 +1,3 @@
-// Extend Express Request interface to include userId
 import { Request as ExpressRequest } from "express";
 declare module "express-serve-static-core" {
   interface Request {

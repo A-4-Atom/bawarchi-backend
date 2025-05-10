@@ -3,8 +3,9 @@ import {
   createFeedback,
   getFeedbacks,
 } from "../controllers/feedback.controller";
+import { requireAuth } from "../middlewares/auth.middleware";
 
 const router = Router();
-router.post("/", createFeedback);
+router.post("/", requireAuth, createFeedback);
 router.get("/", getFeedbacks);
 export default router;

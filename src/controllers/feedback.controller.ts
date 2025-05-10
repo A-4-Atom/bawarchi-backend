@@ -5,15 +5,17 @@ import { WeekDay } from "@prisma/client";
 // POST /api/feedback
 export const createFeedback = async (req: Request, res: Response) => {
   try {
-    const { rating, comment, userId, itemId } = req.body;
-    if (!rating || !userId || !itemId) {
+    const { rating, comment, clerkId, itemId } = req.body;
+    if (!rating || !clerkId || !itemId) {
       return res
         .status(400)
-        .json({ error: "rating, userId, and itemId are required" });
+        .json({ error: "rating, clerkId, and itemId are required" });
     }
     const feedback = await prisma.feedback.create({
-      data: { rating, comment, userId, itemId },
-    });
+      data:{
+        rating, comment, user: {connect: {clerkId}}, item: {connect: {id: itemId}},
+      }
+    })
     res.status(201).json(feedback);
   } catch (err) {
     res.status(500).json({ error: "Failed to create feedback" });

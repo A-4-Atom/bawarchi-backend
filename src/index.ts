@@ -3,6 +3,7 @@ import * as dotenv from "dotenv";
 import menuRoutes from "./routes/menu.routes";
 import feedbackRoutes from "./routes/feedback.routes";
 import webhookRoutes from "./routes/webhook.routes";
+import { clerkMiddleware } from "@clerk/express";
 import cors from "cors";
 
 dotenv.config();
@@ -14,6 +15,7 @@ app.use(cors());
 app.use("/api/webhooks", webhookRoutes);
 
 app.use(express.json());
+app.use(clerkMiddleware());
 
 app.use("/api/menu", menuRoutes);
 app.use("/api/feedback", feedbackRoutes);
