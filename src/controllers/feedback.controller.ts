@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { prisma } from "../prisma/client";
+import { WeekDay } from "@prisma/client";
 
 // POST /api/feedback
 export const createFeedback = async (req: Request, res: Response) => {
@@ -22,19 +23,29 @@ export const createFeedback = async (req: Request, res: Response) => {
 // GET /api/feedback
 export const getFeedbacks = async (req: Request, res: Response) => {
   try {
-    const { itemId } = req.query;
+    const { day } = req.query;
+    if (!day) {
+      return res.status(400).json({ error: "day is required" });
+    }
+    const validDays = Object.values(WeekDay);
+    if (!validDays.includes(day as WeekDay)) {
+      return res.status(400).json({ error: "Invalid day" });
+    }
+
     const skip = parseInt(req.query.skip as string) || 0;
     const take = parseInt(req.query.take as string) || 10;
-    const where = itemId ? { itemId: itemId as string } : {};
+
+    const schedules = await prisma.menuSchedule.findMany({
+      where: { day: day as WeekDay },
+      select: { itemId: true },
+    });
+    const itemIds = schedules.map(s => s.itemId);
+    
     const feedbacks = await prisma.feedback.findMany({
-      where,
+      where: { itemId: { in: itemIds } },
       include: {
-        user: {
-          select: { id: true, name: true, email: true },
-        },
-        item: {
-          select: { id: true, name: true, price: true },
-        },
+        user: { select: { id: true, name: true, email: true } },
+        item: { select: { id: true, name: true, price: true } },
       },
       orderBy: { rating: "desc" },
       skip,
