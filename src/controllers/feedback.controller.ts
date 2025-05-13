@@ -49,7 +49,7 @@ export const getFeedbacks = async (req: Request, res: Response) => {
         user: { select: { id: true, name: true, email: true } },
         item: { select: { id: true, name: true, price: true } },
       },
-      orderBy: { rating: "desc" },
+      orderBy: { createdAt: "desc" },
       skip,
       take,
     });
