@@ -39,6 +39,7 @@ model MessCard {
 model MenuItem {
   id         String          @id @default(cuid())
   name       String
+  description String? // Description of the menu item
   price      Float?
   feedbacks  Feedback[]
   schedules  MenuSchedule[]

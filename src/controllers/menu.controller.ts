@@ -33,6 +33,7 @@ export const getMenuByDay = async (req: Request, res: Response) => {
       name: schedule.item.name,
       price: schedule.item.price,
       rating: schedule.item.feedbacks.reduce((acc, feedback) => acc + feedback.rating, 0) / schedule.item.feedbacks.length || 0,
+      description: schedule.item.description,
     });
   }
 
