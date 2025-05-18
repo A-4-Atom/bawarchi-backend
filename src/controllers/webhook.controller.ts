@@ -8,41 +8,56 @@ export const handleWebhookEvent = async (req: Request, res: Response) => {
     const eventType = evt.type;
 
     if (eventType === "user.created") {
-      const { id, first_name, last_name, email_addresses, image_url } =
-        evt.data;
+      const { id, email_addresses, image_url } = evt.data;
 
-      const collegeName = evt.data.unsafe_metadata?.collegeName as string | null;
+      const fullName = evt.data.unsafe_metadata?.fullName as string | null;
+      const collegeName = evt.data.unsafe_metadata?.collegeName as
+        | string
+        | null;
       const isAdmin = evt.data.unsafe_metadata?.isAdmin as boolean | undefined;
+
+      // Split fullName into first_name and last_name
+      const [first_name, ...lastNameParts] = fullName?.split(" ") || [];
+      const last_name = lastNameParts.join(" ");
+
       // Create user in database
       await prisma.user.create({
         data: {
           clerkId: id,
           email: email_addresses[0].email_address,
-          firstName: first_name,
-          lastName: last_name,
+          firstName: first_name || null,
+          lastName: last_name || null,
           profileImageUrl: image_url,
-          name: `${first_name} ${last_name}`.trim(),
+          name: fullName?.trim() || null,
           collegeName: collegeName,
-          isAdmin: isAdmin
+          isAdmin: isAdmin,
         },
       });
       console.log("User created in database:", first_name);
     } else if (eventType === "user.updated") {
-      const { id, first_name, last_name, email_addresses, image_url } =
-        evt.data;
-        const collegeName = evt.data.unsafe_metadata?.collegeName as string | null;
-        const isAdmin = evt.data.unsafe_metadata?.isAdmin as boolean | undefined;
+      const { id, email_addresses, image_url } = evt.data;
+
+      const fullName = evt.data.unsafe_metadata?.fullName as string | null;
+      const collegeName = evt.data.unsafe_metadata?.collegeName as
+        | string
+        | null;
+      const isAdmin = evt.data.unsafe_metadata?.isAdmin as boolean | undefined;
+
+      // Split fullName into first_name and last_name
+      const [first_name, ...lastNameParts] = fullName?.split(" ") || [];
+      const last_name = lastNameParts.join(" ");
+
       // Update user in database
       await prisma.user.update({
         where: { clerkId: id },
         data: {
           email: email_addresses[0].email_address,
-          firstName: first_name,
-          lastName: last_name,
+          firstName: first_name || null,
+          lastName: last_name || null,
           profileImageUrl: image_url,
-          name: `${first_name} ${last_name}`.trim(),
+          name: fullName?.trim() || null,
           collegeName: collegeName,
-          isAdmin: isAdmin
+          isAdmin: isAdmin,
         },
       });
       console.log("User updated in database:", first_name);
