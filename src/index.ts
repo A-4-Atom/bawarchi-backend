@@ -3,6 +3,7 @@ import * as dotenv from "dotenv";
 import menuRoutes from "./routes/menu.routes";
 import feedbackRoutes from "./routes/feedback.routes";
 import webhookRoutes from "./routes/webhook.routes";
+import phonepeRoutes from "./routes/phonepe.routes";
 import { clerkMiddleware } from "@clerk/express";
 import cors from "cors";
 
@@ -19,6 +20,7 @@ app.use(clerkMiddleware());
 
 app.use("/api/menu", menuRoutes);
 app.use("/api/feedback", feedbackRoutes);
+app.use("/api/phonepe", phonepeRoutes);
 app.get("/", (req, res) => res.send("Hello World!"));
 
 const PORT = process.env.PORT || 3000;
